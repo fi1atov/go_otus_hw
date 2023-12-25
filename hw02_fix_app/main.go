@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	var path = "data.json"
+	path := "data.json"
 
 	fmt.Printf("Enter data file path: ")
 	fmt.Scanln(&path)
