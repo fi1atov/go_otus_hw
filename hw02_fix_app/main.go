@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/fixme_my_friend/hw02_fix_app/printer"
-	"github.com/fixme_my_friend/hw02_fix_app/reader"
-	"github.com/fixme_my_friend/hw02_fix_app/types"
+	"github.com/fi1atov/go_otus_hw/hw02_fix_app/printer"
+	"github.com/fi1atov/go_otus_hw/hw02_fix_app/reader"
+	"github.com/fi1atov/go_otus_hw/hw02_fix_app/types"
 )
 
-func init() {
+func main() {
 	path := "data.json"
 
 	fmt.Printf("Enter data file path: ")
@@ -26,7 +26,4 @@ func init() {
 	fmt.Print(err)
 
 	printer.PrintStaff(staff)
-}
-
-func main() {
 }
