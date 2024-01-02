@@ -4,21 +4,23 @@ import "fmt"
 
 func main() {
 	var size int
+	var result string
 	fmt.Scanf("%d", &size)
 	for x := 1; x <= size; x++ {
 		if x%2 == 0 {
-			fmt.Printf(" ")
+			result += " "
 		}
 		for y := 1; y <= size-1; y++ {
 			if y%2 != 0 {
-				fmt.Printf("#")
+				result += "#"
 			} else {
-				fmt.Printf(" ")
+				result += " "
 			}
 		}
 		if x%2 != 0 {
-			fmt.Printf(" ")
+			result += " "
 		}
-		fmt.Printf("\n")
+		result += "\n"
 	}
+	fmt.Print(result)
 }
