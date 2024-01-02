@@ -5,7 +5,6 @@ import "fmt"
 func main() {
 	var size int
 	fmt.Scanf("%d", &size)
-
 	for x := 1; x <= size; x++ {
 		if x%2 == 0 {
 			fmt.Printf(" ")
