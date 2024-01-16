@@ -2,6 +2,13 @@ package main
 
 import "fmt"
 
+const (
+	year string = "year"
+	size string = "size"
+	rate string = "rate"
+	none string = "none"
+)
+
 type Book struct {
 	isbn   int64
 	title  string
@@ -75,11 +82,11 @@ func NewComparator(fieldCompare string) *Comparator {
 
 func (c *Comparator) Compare(bookOne, bookTwo *Book) bool {
 	switch c.fieldCompare {
-	case "year":
+	case year:
 		return bookOne.Year() > bookTwo.Year()
-	case "size":
+	case size:
 		return bookOne.Size() > bookTwo.Size()
-	case "rate":
+	case rate:
 		return bookOne.Rate() > bookTwo.Rate()
 	default:
 		return false
@@ -111,12 +118,12 @@ func main() {
 	fmt.Println(bk.Size())
 	fmt.Println(bk.Rate())
 
-	c := NewComparator("year")
+	c := NewComparator(year)
 	fmt.Println(c.Compare(&bk, &bk2))
-	c = NewComparator("size")
+	c = NewComparator(size)
 	fmt.Println(c.Compare(&bk, &bk2))
-	c = NewComparator("rate")
+	c = NewComparator(rate)
 	fmt.Println(c.Compare(&bk, &bk2))
-	c = NewComparator("none")
+	c = NewComparator(none)
 	fmt.Println(c.Compare(&bk, &bk2))
 }
