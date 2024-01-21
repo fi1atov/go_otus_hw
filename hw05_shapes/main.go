@@ -10,18 +10,6 @@ type Shape interface {
 	area() float64
 }
 
-type Circle struct {
-	r float64
-}
-
-type Rectangle struct {
-	x, y float64
-}
-
-type Triangle struct {
-	x, h float64
-}
-
 func (c *Circle) area() float64 {
 	return math.Pi * c.r * c.r
 }
