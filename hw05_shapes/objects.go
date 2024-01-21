@@ -1,13 +1,13 @@
 package main
 
 type Circle struct {
-	r float64
+	R float64
 }
 
 type Rectangle struct {
-	x, y float64
+	X, Y float64
 }
 
 type Triangle struct {
-	x, h float64
+	X, H float64
 }
