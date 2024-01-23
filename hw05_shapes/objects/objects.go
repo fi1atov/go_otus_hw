@@ -1,4 +1,4 @@
-package main
+package objects
 
 type Circle struct {
 	R float64
