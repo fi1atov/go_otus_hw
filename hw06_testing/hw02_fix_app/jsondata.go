@@ -8,7 +8,7 @@ import (
 )
 
 func GetJSONData() (staff []types.Employee, err error) {
-	path := "hw02_fix_app/data.json"
+	path := "/home/vladislav/go_projects/go_otus_hw/hw06_testing/hw02_fix_app/data.json"
 
 	fmt.Printf("Enter data file path: ")
 	fmt.Scanln(&path)
