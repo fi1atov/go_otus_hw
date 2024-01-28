@@ -8,8 +8,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestChessboard(t *testing.T) {
+var chessboardSize = 4
+
+func TestChessboardType(t *testing.T) {
 	t.Parallel()
-	res := chessboard.GetChessBoard(10)
-	assert.Equal(t, reflect.TypeOf(res).Kind(), reflect.String)
+	got := chessboard.GetChessBoard(chessboardSize)
+
+	assert.Equal(t, reflect.TypeOf(got).Kind(), reflect.String)
+}
+
+func TestChessboardValue(t *testing.T) {
+	t.Parallel()
+	got := chessboard.GetChessBoard(chessboardSize)
+	want := "# # \n # #\n# # \n # #\n"
+
+	assert.Equal(t, want, got)
 }
