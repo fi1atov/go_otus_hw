@@ -1,26 +1,34 @@
 package main
 
 import (
-	"reflect"
 	"testing"
 
 	chessboard "github.com/fi1atov/go_otus_hw/hw06_testing/hw03_chessboard"
 	"github.com/stretchr/testify/assert"
 )
 
-var chessboardSize = 4
-
-func TestChessboardType(t *testing.T) {
-	t.Parallel()
-	got := chessboard.GetChessBoard(chessboardSize)
-
-	assert.Equal(t, reflect.TypeOf(got).Kind(), reflect.String)
-}
-
 func TestChessboardValue(t *testing.T) {
 	t.Parallel()
-	got := chessboard.GetChessBoard(chessboardSize)
-	want := "# # \n # #\n# # \n # #\n"
-
-	assert.Equal(t, want, got)
+	testCases := []struct {
+		desc           string
+		chessboardSize int
+		want           string
+	}{
+		{
+			desc:           "four",
+			chessboardSize: 4,
+			want:           "# # \n # #\n# # \n # #\n",
+		},
+		{
+			desc:           "six",
+			chessboardSize: 6,
+			want:           "# # # \n # # #\n# # # \n # # #\n# # # \n # # #\n",
+		},
+	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			got := chessboard.GetChessBoard(tC.chessboardSize)
+			assert.Equal(t, tC.want, got)
+		})
+	}
 }
