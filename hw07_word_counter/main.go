@@ -1,22 +1,31 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strings"
+	"unicode/utf8"
 )
 
 func split(r rune) bool {
 	return r == '.' || r == ';' || r == ',' || r == ' '
 }
 
-func countWords(row string) (res map[string]int) {
+func countWords(row string) (res map[string]int, err error) {
 	res = map[string]int{}
-	for _, word := range strings.FieldsFunc(row, split) {
-		res[word]++
+
+	if utf8.ValidString(row) {
+		for _, word := range strings.FieldsFunc(row, split) {
+			res[word]++
+		}
+		return res, nil
 	}
-	return
+	return nil, errors.New("невалидная строка")
 }
 
 func main() {
-	fmt.Println(countWords("ht hl;hl ht,gf ht"))
+	res, err := countWords("ht hl;hl ht,gf ht")
+	fmt.Println(res, err)
+	res, err = countWords("ht hl;hl ht,gf ht")
+	fmt.Println(res, err)
 }

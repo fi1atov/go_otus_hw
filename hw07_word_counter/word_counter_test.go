@@ -27,7 +27,7 @@ func TestWordCounterTdt(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			got := countWords(tC.row)
+			got, _ := countWords(tC.row)
 			assert.Equal(t, tC.want, got)
 		})
 	}
