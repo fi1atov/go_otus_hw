@@ -2,11 +2,13 @@ syntax = "proto3";
 
 package main;
 
+option go_package = "github.com/fi1atov/go_otus_hw/hw09_serialize";
+
 message Book {
-	Isbn   int64 = 1;
-	Title  string = 2;
-	Author string = 3;
-	Year   int = 4;
-	Size   int = 5;
-	Rate   float32 = 6;
+	int64 Isbn = 1;
+	string Title = 2;
+	string Author = 3;
+	int64 Year = 4;
+	int64 Size = 5;
+	float Rate = 6;
 }
