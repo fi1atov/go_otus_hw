@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+
+	"google.golang.org/protobuf/proto"
 )
 
 type Book struct {
@@ -15,14 +17,16 @@ type Book struct {
 }
 
 type Marshaller interface {
-	Marshal() []byte
+	MarshalJSON() []byte
+	// MarshalPROTO() []byte
 }
 
 type Unmarshaller interface {
-	Unmarshal()
+	UnmarshalJSON()
+	// UnmarshallPROTO()
 }
 
-func (b *Book) Marshal() []byte {
+func (b *Book) MarshalJSON() []byte {
 	res, err := json.Marshal(b)
 	if err != nil {
 		panic(err)
@@ -30,11 +34,23 @@ func (b *Book) Marshal() []byte {
 	return res
 }
 
-func (b *Book) Unmarshal(data []byte) {
+func (b *Book) UnmarshalJSON(data []byte) {
 	if err := json.Unmarshal(data, &b); err != nil {
 		panic(err)
 	}
 }
+
+// func (b *Book) MarshalPROTO() []byte {
+// 	res, err := proto.Marshal(b)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	return res
+// }
+
+// func UnmarshallPROTO([]byte) []Book {
+// 	return nil
+// }
 
 func main() {
 	book := Book{
@@ -50,9 +66,12 @@ func main() {
 	fmt.Printf("Объект book: %v\n", book)
 	fmt.Printf("Объект bookSecond: %v\n", bookSecond)
 
-	res := book.Marshal()
-	bookSecond.Unmarshal(res)
+	res := book.MarshalJSON()
+	bookSecond.UnmarshalJSON(res)
 
 	fmt.Printf("book в JSON: %v\n", string(res))
 	fmt.Printf("Объект bookSecond: %v\n", bookSecond)
+
+	protoRes, _ := proto.Marshal(&book)
+	fmt.Printf("Объект protoRes: %v\n", protoRes)
 }
