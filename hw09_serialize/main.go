@@ -22,8 +22,8 @@ type Marshaller interface {
 }
 
 type Unmarshaller interface {
-	UnmarshalJSON()
-	UnmarshalPROTO()
+	UnmarshalJSON([]byte)
+	UnmarshalPROTO([]byte)
 }
 
 func (b *BookLocal) MarshalJSON() []byte {
