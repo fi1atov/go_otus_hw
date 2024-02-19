@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package main;
 
-option go_package = "github.com/fi1atov/go_otus_hw/hw09_serialize";
+option go_package = "/";
 
 message Book {
 	int64 Isbn = 1;
