@@ -7,14 +7,14 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type BookLocal struct {
-	Isbn   int64
-	Title  string
-	Author string
-	Year   int
-	Size   int
-	Rate   float32
-}
+// type BookLocal struct {
+// 	Isbn   int64
+// 	Title  string
+// 	Author string
+// 	Year   int
+// 	Size   int
+// 	Rate   float32
+// }
 
 type Marshaller interface {
 	MarshalJSON() []byte
@@ -26,7 +26,7 @@ type Unmarshaller interface {
 	UnmarshalPROTO([]byte)
 }
 
-func (b *BookLocal) MarshalJSON() []byte {
+func (b *Book) MarshalJSON() []byte {
 	res, err := json.Marshal(b)
 	if err != nil {
 		panic(err)
@@ -34,8 +34,8 @@ func (b *BookLocal) MarshalJSON() []byte {
 	return res
 }
 
-func (b *BookLocal) UnmarshalJSON(data []byte) {
-	if err := json.Unmarshal(data, &b); err != nil {
+func (b *Book) UnmarshalJSON(data []byte) {
+	if err := json.Unmarshal(data, b); err != nil {
 		panic(err)
 	}
 }
@@ -54,8 +54,24 @@ func (b *Book) UnmarshalPROTO(data []byte) {
 	}
 }
 
+// func serializationJSON(books []Book) []byte {
+// 	return nil
+// }
+
+// func deserializationJSON([]byte) []Book {
+// 	return nil
+// }
+
+// func serializationPROTO([]Book) []byte {
+// 	return nil
+// }
+
+// func deserializationPROTO([]byte) []Book {
+// 	return nil
+// }
+
 func main() {
-	book := BookLocal{
+	book := &Book{
 		Isbn:   1,
 		Title:  "Книга",
 		Author: "Автор",
@@ -63,15 +79,7 @@ func main() {
 		Size:   145,
 		Rate:   0.8,
 	}
-	bookSecond := BookLocal{}
-	bookProto := &Book{
-		Isbn:   1,
-		Title:  "Книга",
-		Author: "Автор",
-		Year:   1996,
-		Size:   145,
-		Rate:   0.8,
-	}
+	bookSecond := &Book{}
 	bookProtoSecond := &Book{}
 
 	fmt.Printf("Объект book: %v\n", book)
@@ -85,10 +93,10 @@ func main() {
 
 	fmt.Printf("-----------------------------------------------\n")
 
-	fmt.Printf("Объект bookProto: %v\n", bookProto)
+	fmt.Printf("Объект bookProto: %v\n", book)
 	fmt.Printf("Объект bookProtoSecond: %v\n", bookProtoSecond)
 
-	protoRes := bookProto.MarshalPROTO()
+	protoRes := book.MarshalPROTO()
 	bookProtoSecond.UnmarshalPROTO(protoRes)
 
 	fmt.Printf("Объект protoRes: %v\n", protoRes)
