@@ -54,21 +54,35 @@ func (b *Book) UnmarshalPROTO(data []byte) {
 	}
 }
 
-// func serializationJSON(books []Book) []byte {
-// 	return nil
-// }
+func serializationJSON(books []Book) []byte {
+	res, err := json.Marshal(books)
+	if err != nil {
+		panic(err)
+	}
+	return res
+}
 
-// func deserializationJSON([]byte) []Book {
-// 	return nil
-// }
+func deserializationJSON(books []Book, data []byte) []Book {
+	if err := json.Unmarshal(data, &books); err != nil {
+		panic(err)
+	}
+	return books
+}
 
-// func serializationPROTO([]Book) []byte {
-// 	return nil
-// }
+func serializationPROTO(books []Book) []byte {
+	res, err := proto.Marshal(books)
+	if err != nil {
+		panic(err)
+	}
+	return res
+}
 
-// func deserializationPROTO([]byte) []Book {
-// 	return nil
-// }
+func deserializationPROTO(books []Book, data []byte) []*Book {
+	if err := proto.Unmarshal(data, &books); err != nil {
+		panic(err)
+	}
+	return books
+}
 
 func main() {
 	book := &Book{
@@ -82,6 +96,9 @@ func main() {
 	bookSecond := &Book{}
 	bookProtoSecond := &Book{}
 
+	fmt.Printf("---------------------------------------------\n")
+	fmt.Printf("-----------one object with JSON--------------\n")
+
 	fmt.Printf("Объект book: %v\n", book)
 	fmt.Printf("Объект bookSecond: %v\n", bookSecond)
 
@@ -91,7 +108,7 @@ func main() {
 	fmt.Printf("book в JSON: %v\n", string(res))
 	fmt.Printf("Объект bookSecond: %v\n", bookSecond)
 
-	fmt.Printf("-----------------------------------------------\n")
+	fmt.Printf("-----------one object with PROTO--------------\n")
 
 	fmt.Printf("Объект bookProto: %v\n", book)
 	fmt.Printf("Объект bookProtoSecond: %v\n", bookProtoSecond)
@@ -101,4 +118,44 @@ func main() {
 
 	fmt.Printf("Объект protoRes: %v\n", protoRes)
 	fmt.Printf("Объект bookProtoSecond: %v\n", bookProtoSecond)
+
+	fmt.Printf("----------slice objects with JSON-----------\n")
+	books := []Book{
+		{
+			Isbn:   1,
+			Title:  "Книга",
+			Author: "Автор",
+			Year:   1996,
+			Size:   145,
+			Rate:   0.8,
+		},
+		{
+			Isbn:   1,
+			Title:  "Книга",
+			Author: "Автор",
+			Year:   1996,
+			Size:   145,
+			Rate:   0.8,
+		},
+	}
+	booksEmpty := []Book{}
+	fmt.Printf("Объект books: %v\n", books)
+	fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
+
+	bookSlice := serializationJSON(books)
+	booksEmpty = deserializationJSON(booksEmpty, bookSlice)
+
+	fmt.Printf("Объект bookSlice: %v\n", string(bookSlice))
+	fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
+
+	fmt.Printf("----------slice objects with PROTO-----------\n")
+	booksEmpty = []Book{}
+	fmt.Printf("Объект books: %v\n", books)
+	fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
+
+	// bookPROTO := serializationPROTO(books)
+	// booksEmpty = deserializationPROTO(booksEmpty, bookSlice)
+
+	// fmt.Printf("Объект bookPROTO: %v\n", bookPROTO)
+	// fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
 }
