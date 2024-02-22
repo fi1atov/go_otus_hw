@@ -12,3 +12,7 @@ message Book {
 	int64 Size = 5;
 	float Rate = 6;
 }
+
+message BooksList {
+    repeated Book Content = 1;
+}

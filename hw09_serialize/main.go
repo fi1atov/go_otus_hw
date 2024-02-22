@@ -69,7 +69,7 @@ func deserializationJSON(books []Book, data []byte) []Book {
 	return books
 }
 
-func serializationPROTO(books []Book) []byte {
+func SerializationPROTO(books *BooksList) []byte {
 	res, err := proto.Marshal(books)
 	if err != nil {
 		panic(err)
@@ -77,12 +77,12 @@ func serializationPROTO(books []Book) []byte {
 	return res
 }
 
-func deserializationPROTO(books []Book, data []byte) []*Book {
-	if err := proto.Unmarshal(data, &books); err != nil {
-		panic(err)
-	}
-	return books
-}
+// func deserializationPROTO(books []Book, data []byte) []*Book {
+// 	if err := proto.Unmarshal(data, &books); err != nil {
+// 		panic(err)
+// 	}
+// 	return books
+// }
 
 func main() {
 	book := &Book{
@@ -153,9 +153,9 @@ func main() {
 	fmt.Printf("Объект books: %v\n", books)
 	fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
 
-	// bookPROTO := serializationPROTO(books)
+	bookPROTO := SerializationPROTO(books)
 	// booksEmpty = deserializationPROTO(booksEmpty, bookSlice)
 
-	// fmt.Printf("Объект bookPROTO: %v\n", bookPROTO)
+	fmt.Printf("Объект bookPROTO: %v\n", bookPROTO)
 	// fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
 }

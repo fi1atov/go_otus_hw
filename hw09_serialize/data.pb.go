@@ -107,6 +107,53 @@ func (x *Book) GetRate() float32 {
 	return 0
 }
 
+type BooksList struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Content []*Book `protobuf:"bytes,1,rep,name=Content,proto3" json:"Content,omitempty"`
+}
+
+func (x *BooksList) Reset() {
+	*x = BooksList{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_data_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BooksList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BooksList) ProtoMessage() {}
+
+func (x *BooksList) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BooksList.ProtoReflect.Descriptor instead.
+func (*BooksList) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *BooksList) GetContent() []*Book {
+	if x != nil {
+		return x.Content
+	}
+	return nil
+}
+
 var File_data_proto protoreflect.FileDescriptor
 
 var file_data_proto_rawDesc = []byte{
@@ -119,8 +166,11 @@ var file_data_proto_rawDesc = []byte{
 	0x04, 0x59, 0x65, 0x61, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x59, 0x65, 0x61,
 	0x72, 0x12, 0x12, 0x0a, 0x04, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52,
 	0x04, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x52, 0x61, 0x74, 0x65, 0x18, 0x06, 0x20,
-	0x01, 0x28, 0x02, 0x52, 0x04, 0x52, 0x61, 0x74, 0x65, 0x42, 0x03, 0x5a, 0x01, 0x2f, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x01, 0x28, 0x02, 0x52, 0x04, 0x52, 0x61, 0x74, 0x65, 0x22, 0x31, 0x0a, 0x09, 0x42, 0x6f, 0x6f,
+	0x6b, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x24, 0x0a, 0x07, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e,
+	0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x42,
+	0x6f, 0x6f, 0x6b, 0x52, 0x07, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x42, 0x03, 0x5a, 0x01,
+	0x2f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -135,16 +185,18 @@ func file_data_proto_rawDescGZIP() []byte {
 	return file_data_proto_rawDescData
 }
 
-var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_data_proto_goTypes = []interface{}{
-	(*Book)(nil), // 0: main.Book
+	(*Book)(nil),      // 0: main.Book
+	(*BooksList)(nil), // 1: main.BooksList
 }
 var file_data_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: main.BooksList.Content:type_name -> main.Book
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_data_proto_init() }
@@ -165,6 +217,18 @@ func file_data_proto_init() {
 				return nil
 			}
 		}
+		file_data_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BooksList); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -172,7 +236,7 @@ func file_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_data_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
