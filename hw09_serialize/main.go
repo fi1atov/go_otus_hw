@@ -69,11 +69,11 @@ func deserializationJSON(books []Book, data []byte) []Book {
 	return books
 }
 
-func SerializationPROTO(books []Book) []byte {
+func SerializationPROTO(books []*Book) []byte {
 	bookList := BooksList{
 		Content: books,
 	}
-	res, err := proto.Marshal(bookList)
+	res, err := proto.Marshal(&bookList)
 	if err != nil {
 		panic(err)
 	}
