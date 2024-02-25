@@ -54,7 +54,7 @@ func (b *Book) UnmarshalPROTO(data []byte) {
 	}
 }
 
-func serializationJSON(books []Book) []byte {
+func serializationJSON(books []*Book) []byte {
 	res, err := json.Marshal(books)
 	if err != nil {
 		panic(err)
@@ -124,22 +124,22 @@ func main() {
 	fmt.Printf("Объект bookProtoSecond: %v\n", bookProtoSecond)
 
 	fmt.Printf("----------slice objects with JSON-----------\n")
-	books := []Book{
+	books := []*Book{
 		{
 			Isbn:   1,
-			Title:  "Книга",
-			Author: "Автор",
+			Title:  "Книга1",
+			Author: "Автор1",
 			Year:   1996,
 			Size:   145,
 			Rate:   0.8,
 		},
 		{
-			Isbn:   1,
-			Title:  "Книга",
-			Author: "Автор",
-			Year:   1996,
-			Size:   145,
-			Rate:   0.8,
+			Isbn:   2,
+			Title:  "Книга2",
+			Author: "Автор2",
+			Year:   1997,
+			Size:   120,
+			Rate:   0.6,
 		},
 	}
 	booksEmpty := []Book{}
@@ -154,13 +154,11 @@ func main() {
 	fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
 
 	fmt.Printf("----------slice objects with PROTO-----------\n")
-	booksEmpty = []Book{}
 	fmt.Printf("Объект books: %v\n", books)
-	fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
 
 	bookPROTO := SerializationPROTO(books)
 	deserializedBooks := DeserializationPROTO(bookPROTO)
 
 	fmt.Printf("Объект bookPROTO: %v\n", bookPROTO)
-	fmt.Printf("Объект booksEmpty: %v\n", deserializedBooks)
+	fmt.Printf("Объект deserializedBooks: %v\n", deserializedBooks)
 }
