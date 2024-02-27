@@ -8,9 +8,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestStructJSON(t *testing.T) {
-	t.Parallel()
-	bk1 := Book{
+func getBook() (bk1 Book) {
+	bk1 = Book{
 		Isbn:   1,
 		Title:  "Книга",
 		Author: "Автор",
@@ -18,6 +17,36 @@ func TestStructJSON(t *testing.T) {
 		Size:   145,
 		Rate:   0.8,
 	}
+
+	return
+}
+
+func getSliceBooks() (books []*Book) {
+	books = []*Book{
+		{
+			Isbn:   1,
+			Title:  "Книга1",
+			Author: "Автор1",
+			Year:   1996,
+			Size:   145,
+			Rate:   0.8,
+		},
+		{
+			Isbn:   2,
+			Title:  "Книга2",
+			Author: "Автор2",
+			Year:   1997,
+			Size:   120,
+			Rate:   0.6,
+		},
+	}
+	return
+}
+
+func TestStructJSON(t *testing.T) {
+	t.Parallel()
+
+	bk1 := getBook()
 	bk2 := Book{}
 
 	got := bk1.MarshalJSON()
@@ -32,14 +61,8 @@ func TestStructJSON(t *testing.T) {
 
 func TestStructPROTO(t *testing.T) {
 	t.Parallel()
-	bk1 := Book{
-		Isbn:   1,
-		Title:  "Книга",
-		Author: "Автор",
-		Year:   1996,
-		Size:   145,
-		Rate:   0.8,
-	}
+
+	bk1 := getBook()
 	bk2 := Book{}
 
 	got := bk1.MarshalPROTO()
@@ -59,55 +82,24 @@ func TestStructPROTO(t *testing.T) {
 
 func TestSliceOfStructsJSON(t *testing.T) {
 	t.Parallel()
-	books := []*Book{
-		{
-			Isbn:   1,
-			Title:  "Книга1",
-			Author: "Автор1",
-			Year:   1996,
-			Size:   145,
-			Rate:   0.8,
-		},
-		{
-			Isbn:   2,
-			Title:  "Книга2",
-			Author: "Автор2",
-			Year:   1997,
-			Size:   120,
-			Rate:   0.6,
-		},
-	}
 
-	got := serializationJSON(books)
+	books := getSliceBooks()
+
+	got := SerializationJSON(books)
 	want, _ := json.Marshal(books)
 
 	assert.Equal(t, want, got)
 
-	booksEmpty := deserializationJSON(got)
+	booksEmpty := DeserializationJSON(got)
 
 	assert.Equal(t, &books, &booksEmpty)
 }
 
 func TestSliceOfStructsPROTO(t *testing.T) {
 	t.Parallel()
-	books := []*Book{
-		{
-			Isbn:   1,
-			Title:  "Книга1",
-			Author: "Автор1",
-			Year:   1996,
-			Size:   145,
-			Rate:   0.8,
-		},
-		{
-			Isbn:   2,
-			Title:  "Книга2",
-			Author: "Автор2",
-			Year:   1997,
-			Size:   120,
-			Rate:   0.6,
-		},
-	}
+
+	books := getSliceBooks()
+
 	bookList := BooksList{
 		Content: books,
 	}
