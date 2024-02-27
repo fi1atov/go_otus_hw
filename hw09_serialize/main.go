@@ -62,7 +62,8 @@ func serializationJSON(books []*Book) []byte {
 	return res
 }
 
-func deserializationJSON(books []Book, data []byte) []Book {
+func deserializationJSON(data []byte) []*Book {
+	books := []*Book{}
 	if err := json.Unmarshal(data, &books); err != nil {
 		panic(err)
 	}
@@ -142,13 +143,11 @@ func main() {
 			Rate:   0.6,
 		},
 	}
-	booksEmpty := []Book{}
 
 	fmt.Printf("Объект books: %v\n", books)
-	fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
 
 	bookSlice := serializationJSON(books)
-	booksEmpty = deserializationJSON(booksEmpty, bookSlice)
+	booksEmpty := deserializationJSON(bookSlice)
 
 	fmt.Printf("Объект bookSlice: %v\n", string(bookSlice))
 	fmt.Printf("Объект booksEmpty: %v\n", booksEmpty)
