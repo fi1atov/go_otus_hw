@@ -6,53 +6,48 @@ import (
 	"time"
 )
 
-func writeInChannel(channel chan int) {
-	for {
-		n := rand.Intn(1000)
-		time.Sleep(1 * time.Second) // Достаточно только здесь добавить чтобы замедлить программу
-		channel <- n
-		// fmt.Println("Insert to channel: ", n)
-	}
+func Sensor() chan float64 {
+	res := make(chan float64)
+	timer := time.After(time.Minute)
+	go func() {
+		defer close(res)
+		for {
+			select {
+			case res <- rand.Float64():
+			case <-timer:
+				return
+			}
+			time.Sleep(100 * time.Millisecond)
+		}
+	}()
+	return res
 }
 
-func calculateAverage(channel chan int) int {
-	total := 0
-	counter := 0
-	for num := range channel {
-		total += num
-		counter++
-		if counter == 10 {
-			break
-		}
-	}
-	return total / 10
-}
+func SensorReader(sensorData <-chan float64) chan float64 {
+	res := make(chan float64)
 
-func processingData(channelData, channelProcessed chan int) {
-	for {
-		if len(channelData) == 10 {
-			// fmt.Println("10 elems received")
-			average := calculateAverage(channelData)
-			// fmt.Println("get average: ", average)
-			channelProcessed <- average
+	go func() {
+		defer close(res)
+		i := 0
+		var accum float64
+		for v := range sensorData {
+			i++
+			accum += v
+			if i%10 == 0 {
+				res <- accum / 10.0
+				accum = 0.0
+			}
 		}
-	}
+	}()
+
+	return res
 }
 
 func main() {
-	SensorDataChannel := make(chan int, 10)
-	ProcessedDataChannel := make(chan int)
+	dataCh := Sensor()
+	acumCh := SensorReader(dataCh)
 
-	go writeInChannel(SensorDataChannel)
-
-	go processingData(SensorDataChannel, ProcessedDataChannel)
-
-	for {
-		fmt.Println("Printing calculate Average: ", <-ProcessedDataChannel)
+	for d := range acumCh {
+		fmt.Println(d)
 	}
-
-	// Ждем 60 секунд, затем отправляем сигнал об остановке
-	// Но сюда я никогда не попаду ведь у меня выше бесконечный цикл
-	// time.Sleep(60 * time.Second)
-	// stop <- true
 }
