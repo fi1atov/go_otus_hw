@@ -9,8 +9,7 @@ import (
 func writeInChannel(channel chan int) {
 	for {
 		n := rand.Intn(1000)
-		// runtime.Gosched()
-		time.Sleep(1 * time.Second)
+		time.Sleep(1 * time.Second) // Достаточно только здесь добавить чтобы замедлить программу
 		channel <- n
 		fmt.Println("Insert to channel: ", n)
 	}
@@ -37,7 +36,6 @@ func processingData(channelData, channelProcessed chan int) {
 			}
 		}
 		fmt.Println("Get from channel 10 elems into slice: ", dataSlice)
-		time.Sleep(1 * time.Second)
 		average := calculateAverage(dataSlice)
 		fmt.Println("Calculate average for 10 elems: ", average)
 		channelProcessed <- average
