@@ -11,41 +11,31 @@ func writeInChannel(channel chan int) {
 		n := rand.Intn(1000)
 		time.Sleep(1 * time.Second) // Достаточно только здесь добавить чтобы замедлить программу
 		channel <- n
-		fmt.Println("Insert to channel: ", n)
+		// fmt.Println("Insert to channel: ", n)
 	}
 }
 
-func calculateAverage(list []int) int {
+func calculateAverage(channel chan int) int {
 	total := 0
-	for _, num := range list {
+	counter := 0
+	for num := range channel {
 		total += num
+		counter++
+		if counter == 10 {
+			break
+		}
 	}
-	return total / len(list)
+	return total / 10
 }
 
 func processingData(channelData, channelProcessed chan int) {
 	for {
-		dataSlice := make([]int, 0, 10)
-		for s := range channelData {
-			dataSlice = append(dataSlice, s)
-			fmt.Println("Append 1 elem into slice: ", s)
-
-			if len(dataSlice) == 10 {
-				fmt.Println("10 elems reached")
-				break
-			}
+		if len(channelData) == 10 {
+			// fmt.Println("10 elems received")
+			average := calculateAverage(channelData)
+			// fmt.Println("get average: ", average)
+			channelProcessed <- average
 		}
-		fmt.Println("Get from channel 10 elems into slice: ", dataSlice)
-		average := calculateAverage(dataSlice)
-		fmt.Println("Calculate average for 10 elems: ", average)
-		channelProcessed <- average
-		fmt.Println("Average into new channel: ", average)
-	}
-}
-
-func printAverage(channelProcessed chan int) {
-	for {
-		fmt.Println("Printing calculate Average: ", <-channelProcessed)
 	}
 }
 
@@ -57,7 +47,12 @@ func main() {
 
 	go processingData(SensorDataChannel, ProcessedDataChannel)
 
-	go printAverage(ProcessedDataChannel)
+	for {
+		fmt.Println("Printing calculate Average: ", <-ProcessedDataChannel)
+	}
 
-	time.Sleep(60 * time.Second)
+	// Ждем 60 секунд, затем отправляем сигнал об остановке
+	// Но сюда я никогда не попаду ведь у меня выше бесконечный цикл
+	// time.Sleep(60 * time.Second)
+	// stop <- true
 }
