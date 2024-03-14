@@ -13,7 +13,7 @@ func Sensor() chan float64 {
 		defer close(res)
 		for {
 			select {
-			case res <- rand.Float64():
+			case res <- rand.Float64(): // #nosec G404
 			case <-timer:
 				return
 			}
