@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"sync"
 )
 
@@ -13,18 +14,19 @@ func counterInGorutines(iteraionsNumber int) int {
 
 	for i := 0; i < iteraionsNumber; i++ {
 		wg.Add(1)
-		go func() {
+		go func(i int) {
 			defer wg.Done()
 			m.Lock()
 			counter++
 			m.Unlock()
-		}()
+			log.Printf("Gorutine %d - task done\n", i)
+		}(i)
 	}
 	wg.Wait()
 	return counter
 }
 
 func main() {
-	res := counterInGorutines(1000)
+	res := counterInGorutines(100)
 	fmt.Println(res)
 }
