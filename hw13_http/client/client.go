@@ -11,14 +11,13 @@ import (
 )
 
 func getParams() (url, path, queryType string) {
-
 	// Когда указывают с именами: go run main.go -u=localhost:10001 -p=/path
-	pflag.StringVarP(&url, "url", "u", "localhost:8080", "server url")
+	pflag.StringVarP(&url, "url", "u", "http://localhost:8080", "server url")
 	pflag.StringVarP(&path, "path", "p", "/hello", "resource path")
 	pflag.StringVarP(&queryType, "queryType", "q", "GET", "get or post query")
 
 	// Когда указывают: go run main.go -u -p - подставить значения по умолчанию
-	pflag.Lookup("url").NoOptDefVal = "localhost:8080"
+	pflag.Lookup("url").NoOptDefVal = "http://localhost:8080"
 	pflag.Lookup("path").NoOptDefVal = "/hello"
 	pflag.Lookup("queryType").NoOptDefVal = "GET"
 
@@ -33,32 +32,48 @@ func getParams() (url, path, queryType string) {
 	return
 }
 
+func get(url, path string) (body string, err error) {
+	resource := fmt.Sprintf("%s%s", url, path)
+	req, err := http.Get(resource) //nolint
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer req.Body.Close()
+
+	bodyBytes, err := io.ReadAll(req.Body)
+	return string(bodyBytes), err
+}
+
+func post(url, path string) (body string, err error) {
+	resource := fmt.Sprintf("%s%s", url, path)
+	data := []byte(`{"foo":"bar"}`)
+	r := bytes.NewReader(data)
+	req, err := http.Post(resource, "application/json", r) //nolint
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer req.Body.Close()
+
+	bodyBytes, err := io.ReadAll(req.Body)
+	return string(bodyBytes), err
+}
+
 func main() {
 	url, path, queryType := getParams()
 
-	resource := "http://"+url+path
-
 	if queryType == "GET" {
-		req, err := http.Get(resource)
+		body, err := get(url, path)
 		if err != nil {
 			log.Println(err)
 		}
-	
-		defer req.Body.Close()
-	
-		bodyBytes, err := io.ReadAll(req.Body)
-		fmt.Println(string(bodyBytes))
-	} else if queryType == "POST"{
-		data := []byte(`{"foo":"bar"}`)
-		r := bytes.NewReader(data)
-		req, err := http.Post(resource, "application/json", r)
+		fmt.Println(body)
+	} else if queryType == "POST" {
+		body, err := post(url, path)
 		if err != nil {
 			log.Println(err)
 		}
-	
-		defer req.Body.Close()
-	
-		bodyBytes, err := io.ReadAll(req.Body)
-		fmt.Println(string(bodyBytes))
+		fmt.Println(body)
 	}
 }

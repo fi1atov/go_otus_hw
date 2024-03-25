@@ -30,10 +30,10 @@ func hello(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":		
-		log.Println("GET"+answer)
+		log.Println("GET "+answer)
 		fmt.Fprintf(w, "GET "+answer)
 	case "POST":
-		log.Println("POST"+answer)
+		log.Println("POST "+answer)
 		fmt.Fprintf(w, "POST "+answer)
 	default:
 		fmt.Fprintf(w, "Only GET and POST methods are supported.")
