@@ -9,7 +9,6 @@ import (
 )
 
 func getParams() (address string, port int16) {
-
 	// Когда указывают с именами: go run main.go -u=localhost:10001 -p=/path
 	pflag.StringVarP(&address, "address", "u", "localhost", "server address")
 	pflag.Int16VarP(&port, "port", "p", 8080, "service port")
@@ -29,11 +28,11 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	answer := "Hello!"
 
 	switch r.Method {
-	case "GET":		
-		log.Println("GET "+answer)
+	case "GET":
+		log.Println("GET " + answer)
 		fmt.Fprintf(w, "GET "+answer)
 	case "POST":
-		log.Println("POST "+answer)
+		log.Println("POST " + answer)
 		fmt.Fprintf(w, "POST "+answer)
 	default:
 		fmt.Fprintf(w, "Only GET and POST methods are supported.")
@@ -45,5 +44,5 @@ func main() {
 	host := fmt.Sprintf("%s:%d", address, port)
 
 	http.HandleFunc("/hello", hello)
-	http.ListenAndServe(host, nil)
+	http.ListenAndServe(host, nil)	//nolint
 }
