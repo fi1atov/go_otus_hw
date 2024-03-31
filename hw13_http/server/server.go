@@ -1,12 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/spf13/pflag"
 )
+
+type Person struct {
+	Name    string
+	Surname string
+}
 
 func getParams() (address string, port int16) {
 	// Когда указывают с именами: go run main.go -u=localhost:10001 -p=/path
@@ -29,13 +35,21 @@ func hello(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		log.Println("GET " + answer)
-		fmt.Fprintf(w, "GET "+answer)
+		nameQueryParam := r.URL.Query().Get("name")
+		surnameQueryParam := r.URL.Query().Get("surname")
+		log.Println("GET " + answer + " " + nameQueryParam + " " + surnameQueryParam)
+		fmt.Fprintf(w, "GET "+answer+" "+nameQueryParam+" "+surnameQueryParam)
 	case "POST":
-		log.Println("POST " + answer)
-		fmt.Fprintf(w, "POST "+answer)
+		var p Person
+
+		_ = json.NewDecoder(r.Body).Decode(&p)
+
+		log.Println("POST " + answer + " " + p.Name + " " + p.Surname)
+		fmt.Fprintf(w, "POST "+answer+" "+p.Name+" "+p.Surname)
 	default:
-		fmt.Fprintf(w, "Only GET and POST methods are supported.")
+		// fmt.Fprintf(w, "Only GET and POST methods are supported.")
+		code := 405
+		http.Error(w, "Only GET and POST methods are supported.", code)
 	}
 }
 
@@ -43,6 +57,6 @@ func main() {
 	address, port := getParams()
 	host := fmt.Sprintf("%s:%d", address, port)
 
-	http.HandleFunc("/hello", hello)
-	http.ListenAndServe(host, nil)	//nolint
+	http.HandleFunc("/", hello)
+	http.ListenAndServe(host, nil) //nolint
 }

@@ -13,12 +13,12 @@ import (
 func getParams() (url, path, queryType string) {
 	// Когда указывают с именами: go run main.go -u=localhost:10001 -p=/path
 	pflag.StringVarP(&url, "url", "u", "http://localhost:8080", "server url")
-	pflag.StringVarP(&path, "path", "p", "/hello", "resource path")
+	pflag.StringVarP(&path, "path", "p", "/", "resource path")
 	pflag.StringVarP(&queryType, "queryType", "q", "GET", "get or post query")
 
 	// Когда указывают: go run main.go -u -p - подставить значения по умолчанию
 	pflag.Lookup("url").NoOptDefVal = "http://localhost:8080"
-	pflag.Lookup("path").NoOptDefVal = "/hello"
+	pflag.Lookup("path").NoOptDefVal = "/"
 	pflag.Lookup("queryType").NoOptDefVal = "GET"
 
 	pflag.Parse()

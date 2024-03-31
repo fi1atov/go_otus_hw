@@ -15,7 +15,7 @@ func TestClient(t *testing.T) {
 	// Start a local HTTP server
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Test request parameters
-		assert.Equal(t, req.URL.String(), "/hello")
+		assert.Equal(t, req.URL.String(), "/")
 		// Send response to be tested
 		// rw.Write([]byte(`GET Hello!`))
 		fmt.Fprintf(rw, "GET Hello!")

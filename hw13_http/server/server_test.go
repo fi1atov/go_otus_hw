@@ -9,7 +9,7 @@ import (
 func TestServer(t *testing.T) {
 	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
 	// pass 'nil' as the third parameter.
-	req, err := http.NewRequest("GET", "/hello", nil) //nolint
+	req, err := http.NewRequest("GET", "/?name=Vladislav&surname=Filatov", nil) //nolint
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -29,7 +29,7 @@ func TestServer(t *testing.T) {
 	}
 
 	// Check the response body is what we expect.
-	expected := "GET Hello!"
+	expected := "GET Hello! Vladislav Filatov"
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), expected)
