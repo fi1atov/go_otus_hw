@@ -5,32 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
-
-// Структура для хранения данных о продукте.
-type Product struct {
-	ID   int
-	Name string
-}
-
-// Структура для хранения данных о пользователе.
-type User struct {
-	ID       int
-	Name     string
-	Email    string
-	Password string
-}
-
-// Структура для хранения данных о заказх.
-type Order struct {
-	ID          int
-	UserId      int
-	OrderDate   time.Time
-	TotalAmount float32
-}
 
 func main() {
 	ctx := context.Background()
@@ -43,13 +20,14 @@ func main() {
 
 	// conn, err := pgxpool.New(ctx, dsn)
 	conn, err := pgxpool.NewWithConfig(ctx, pgCfg)
-	defer conn.Close()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
 
-	if err := conn.Ping(ctx); err != nil {
+	defer conn.Close()
+
+	if err = conn.Ping(ctx); err != nil {
 		log.Fatal("We cannot connect to database")
 	}
 
@@ -79,80 +57,19 @@ func main() {
 	for _, order := range orders {
 		fmt.Printf(
 			"ID: %d, ID пользователя: %d, Дата заказа: %s, Сумма: %f\n",
-			order.ID, order.UserId, order.OrderDate, order.TotalAmount,
+			order.ID, order.UserID, order.OrderDate, order.TotalAmount,
 		)
 	}
-}
 
-// Получение списка всех продуктов.
-func GetProducts(ctx context.Context, db *pgxpool.Pool) ([]Product, error) {
-	rows, err := db.Query(ctx, `SELECT s.id, s.name FROM products s`)
-
-	defer rows.Close()
-
+	// Вывод статистики по пользователю
+	userStats, err := GetUserStat(ctx, conn)
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
-
-	var products []Product
-	for rows.Next() {
-		var product Product
-		err = rows.Scan(&product.ID, &product.Name)
-		if err != nil {
-			return nil, err
-		}
-		products = append(products, product)
+	for _, userStat := range userStats {
+		fmt.Printf(
+			"Имя: %s, Сумма заказов: %f, Средняя цена товара: %f\n",
+			userStat.UserName, userStat.TotalAmount, userStat.AvgPrice,
+		)
 	}
-
-	return products, nil
-}
-
-// Получение списка всех пользователей.
-func GetUsers(ctx context.Context, db *pgxpool.Pool) ([]User, error) {
-	rows, err := db.Query(ctx, `SELECT u.id, u.name, u.email, u.password FROM users u`)
-
-	defer rows.Close()
-
-	if err != nil {
-		return nil, err
-	}
-
-	var users []User
-	for rows.Next() {
-		var user User
-		err = rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password)
-		if err != nil {
-			return nil, err
-		}
-		users = append(users, user)
-	}
-
-	return users, nil
-}
-
-// Получение списка всех пользователей.
-func GetUserOrders(ctx context.Context, db *pgxpool.Pool) ([]Order, error) {
-	rows, err := db.Query(ctx, `
-		SELECT o.* FROM orders o 
-		join users u ON o.user_id = u.id
-		where u.name=$1`, "Дима",
-	)
-
-	defer rows.Close()
-
-	if err != nil {
-		return nil, err
-	}
-
-	var orders []Order
-	for rows.Next() {
-		var order Order
-		err = rows.Scan(&order.ID, &order.UserId, &order.OrderDate, &order.TotalAmount)
-		if err != nil {
-			return nil, err
-		}
-		orders = append(orders, order)
-	}
-
-	return orders, nil
 }
