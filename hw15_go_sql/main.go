@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func main() {
+func old() {
 	ctx := context.Background()
 	dsn := "postgres://postgres:postgres@localhost:5432/test_db?search_path=test_schema&sslmode=disable&pool_max_conns=20"
 
@@ -29,15 +29,6 @@ func main() {
 
 	if err = conn.Ping(ctx); err != nil {
 		log.Fatal("We cannot connect to database")
-	}
-
-	// Вывод всех продуктов
-	products, err := GetProducts(ctx, conn)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, product := range products {
-		fmt.Printf("ID: %d, Имя: %s\n", product.ID, product.Name)
 	}
 
 	// Вывод всех пользователей
