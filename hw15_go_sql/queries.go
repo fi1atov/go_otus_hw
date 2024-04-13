@@ -7,35 +7,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// Структура для хранения данных о продукте.
-type Product struct {
-	ID   int
-	Name string
-}
-
-// Структура для хранения данных о пользователе.
-type User struct {
-	ID       int
-	Name     string
-	Email    string
-	Password string
-}
-
-// Структура для хранения данных о заказах.
-type Order struct {
-	ID          int
-	UserID      int
-	OrderDate   time.Time
-	TotalAmount float32
-}
-
-// Структура для хранения статистики по пользователю.
-type UserStat struct {
-	UserName    string
-	TotalAmount float32
-	AvgPrice    float32
-}
-
 // Получение списка всех продуктов.
 func GetProducts(ctx context.Context, db *pgxpool.Pool) ([]Product, error) {
 	rows, err := db.Query(ctx, `SELECT s.id, s.name FROM products s`)
@@ -135,4 +106,101 @@ func GetUserStat(ctx context.Context, db *pgxpool.Pool) ([]UserStat, error) {
 	}
 
 	return userStats, nil
+}
+
+// Добавление пользователя.
+func AddUser(ctx context.Context, db *pgxpool.Pool, name, email, password string) error {
+	_, err := db.Exec(
+		ctx,
+		`INSERT INTO users (name, email, password)
+		VALUES ($1,$2,$3)`, name, email, password,
+	)
+	return err
+}
+
+// Добавление пользователя.
+func UpdateUser(ctx context.Context, db *pgxpool.Pool, id int, name, email, password string) error {
+	_, err := db.Exec(
+		ctx,
+		`UPDATE users
+		SET
+		name = $2,
+		email = $3,
+		password = $4
+		WHERE id = $1`, id, name, email, password,
+	)
+	return err
+}
+
+// Удаление пользователя.
+func DeleteUser(ctx context.Context, db *pgxpool.Pool, id int) error {
+	_, err := db.Exec(
+		ctx,
+		`DELETE FROM users
+		WHERE id = $1`, id,
+	)
+	return err
+}
+
+// Добавление продукта.
+func AddProduct(ctx context.Context, db *pgxpool.Pool, name string, price float32) error {
+	_, err := db.Exec(
+		ctx,
+		`INSERT INTO products (name, price)
+		VALUES ($1,$2)`, name, price,
+	)
+	return err
+}
+
+// Добавление продукта.
+func UpdateProduct(ctx context.Context, db *pgxpool.Pool, id int, name string, price float32) error {
+	_, err := db.Exec(
+		ctx,
+		`UPDATE products
+		SET
+		name = $2,
+		price = $3
+		WHERE id = $1`, id, name, price,
+	)
+	return err
+}
+
+// Удаление продукта.
+func DeleteProduct(ctx context.Context, db *pgxpool.Pool, id int) error {
+	_, err := db.Exec(
+		ctx,
+		`DELETE FROM products
+		WHERE id = $1`, id,
+	)
+	return err
+}
+
+// Добавление заказа.
+func AddOrder(ctx context.Context, db *pgxpool.Pool, userID int, totalAmount float32) error {
+	_, err := db.Exec(
+		ctx,
+		`INSERT INTO orders (user_id, order_date, total_amount)
+		VALUES ($1,$2,$3)`, userID, time.Now(), totalAmount,
+	)
+	return err
+}
+
+// Добавление продуктов заказа.
+func AddOrderProduct(ctx context.Context, db *pgxpool.Pool, orderID, productID int) error {
+	_, err := db.Exec(
+		ctx,
+		`INSERT INTO order_products (order_id, product_id)
+		VALUES ($1,$2)`, orderID, productID,
+	)
+	return err
+}
+
+// Удаление продукта.
+func DeleteOrder(ctx context.Context, db *pgxpool.Pool, id int) error {
+	_, err := db.Exec(
+		ctx,
+		`DELETE FROM orders
+		WHERE id = $1`, id,
+	)
+	return err
 }
