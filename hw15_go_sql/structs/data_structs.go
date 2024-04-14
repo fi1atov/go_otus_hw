@@ -1,4 +1,4 @@
-package main
+package structs
 
 import (
 	"time"
@@ -31,4 +31,8 @@ type UserStat struct {
 	UserName    string
 	TotalAmount float32
 	AvgPrice    float32
+}
+
+type ProductService interface {
+	GetProducts() ([]Product, error)
 }
