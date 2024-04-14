@@ -2,7 +2,10 @@ module github.com/fi1atov/go_otus_hw/hw15_go_sql
 
 go 1.20
 
-require github.com/jackc/pgx/v5 v5.5.5
+require (
+	github.com/jackc/pgx/v5 v5.5.5
+	github.com/spf13/pflag v1.0.5
+)
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
