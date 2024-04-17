@@ -13,7 +13,7 @@ type DBPool struct {
 	*pgxpool.Pool
 }
 
-func OpenPool() (*DBPool, context.Context, error) {
+func OpenPool() (*DBPool, error) {
 	ctx := context.Background()
 	dsn := "postgres://postgres:postgres@localhost:5432/test_db?search_path=test_schema&sslmode=disable&pool_max_conns=20"
 
@@ -33,5 +33,5 @@ func OpenPool() (*DBPool, context.Context, error) {
 	}
 
 	log.Println("successfully connected to database")
-	return &DBPool{conn}, ctx, nil
+	return &DBPool{conn}, nil
 }

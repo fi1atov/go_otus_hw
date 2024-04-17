@@ -8,16 +8,15 @@ import (
 
 type ProductService struct {
 	dbpool *DBPool
-	ctx    context.Context
 }
 
-func NewProductService(ctx context.Context, dbpool *DBPool) *ProductService {
-	return &ProductService{dbpool, ctx}
+func NewProductService(dbpool *DBPool) *ProductService {
+	return &ProductService{dbpool}
 }
 
 // Получение списка всех продуктов.
 func (ps *ProductService) GetProducts() ([]structs.Product, error) {
-	rows, err := ps.dbpool.Query(ps.ctx, `SELECT s.id, s.name FROM products s`)
+	rows, err := ps.dbpool.Query(context.TODO(), `SELECT s.id, s.name FROM products s`)
 	if err != nil {
 		return nil, err
 	}

@@ -29,10 +29,10 @@ func getServerParams() (address string, port int16) {
 func main() {
 	address, port := getServerParams()
 	host := fmt.Sprintf("%s:%d", address, port)
-	dbPool, ctx, err := postgres.OpenPool()
+	dbPool, err := postgres.OpenPool()
 	if err != nil {
 		log.Fatalf("cannot open database pool: %v", err)
 	}
-	srv := server.NewServer(ctx, dbPool)
+	srv := server.NewServer(dbPool)
 	srv.Run(host)
 }

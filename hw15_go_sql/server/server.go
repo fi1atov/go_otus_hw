@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"time"
@@ -16,7 +15,7 @@ type Server struct {
 	// ...
 }
 
-func NewServer(ctx context.Context, dbpool *postgres.DBPool) *Server {
+func NewServer(dbpool *postgres.DBPool) *Server {
 	s := Server{
 		server: &http.Server{
 			WriteTimeout: 5 * time.Second,
@@ -28,7 +27,7 @@ func NewServer(ctx context.Context, dbpool *postgres.DBPool) *Server {
 	http.HandleFunc("/get_products", s.getProducts)
 	// ...
 
-	s.productService = postgres.NewProductService(ctx, dbpool)
+	s.productService = postgres.NewProductService(dbpool)
 	// ...
 
 	return &s
