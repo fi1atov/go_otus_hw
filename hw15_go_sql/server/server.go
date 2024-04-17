@@ -24,7 +24,7 @@ func NewServer(dbpool *postgres.DBPool) *Server {
 		},
 	}
 
-	http.HandleFunc("/get_products", s.getProducts)
+	http.HandleFunc("GET /get_products", s.getProducts)
 	// ...
 
 	s.productService = postgres.NewProductService(dbpool)

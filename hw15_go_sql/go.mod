@@ -1,6 +1,6 @@
 module github.com/fi1atov/go_otus_hw/hw15_go_sql
 
-go 1.20
+go 1.22.1
 
 require (
 	github.com/jackc/pgx/v5 v5.5.5
