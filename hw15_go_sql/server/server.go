@@ -15,7 +15,7 @@ type Server struct {
 	// ...
 }
 
-func NewServer(dbpool *postgres.DBPool) *Server {
+func NewServer(db *postgres.DB) *Server {
 	s := Server{
 		server: &http.Server{
 			WriteTimeout: 5 * time.Second,
@@ -24,10 +24,13 @@ func NewServer(dbpool *postgres.DBPool) *Server {
 		},
 	}
 
-	http.HandleFunc("GET /get_products", s.getProducts)
+	http.HandleFunc("GET /products", s.getProducts)
+	http.HandleFunc("POST /product", s.createProduct)
+	// http.HandleFunc("PUT /product", s.updateProduct)
+	// http.HandleFunc("DELETE /product/{id}", s.deleteProduct)
 	// ...
 
-	s.productService = postgres.NewProductService(dbpool)
+	s.productService = postgres.NewProductService(db)
 	// ...
 
 	return &s

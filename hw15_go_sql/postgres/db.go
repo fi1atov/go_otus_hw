@@ -1,37 +1,31 @@
 package postgres
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jmoiron/sqlx"
 )
 
-type DBPool struct {
-	*pgxpool.Pool
+type DB struct {
+	*sqlx.DB
 }
 
-func OpenPool() (*DBPool, error) {
-	ctx := context.Background()
-	dsn := "postgres://postgres:postgres@localhost:5432/test_db?search_path=test_schema&sslmode=disable&pool_max_conns=20"
-
-	pgCfg, err := pgxpool.ParseConfig(dsn)
-	if err != nil {
-		log.Fatal("We couldn't find any correct DSN")
-	}
-
-	conn, err := pgxpool.NewWithConfig(ctx, pgCfg)
+func OpenPool() (*DB, error) {
+	db, err := sqlx.Connect(
+		"postgres",
+		"user=postgres password=postgres dbname=test_db port=5432 search_path=test_schema sslmode=disable",
+	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
 
-	if err = conn.Ping(ctx); err != nil {
+	if err = db.Ping(); err != nil {
 		log.Fatal("We cannot connect to database")
 	}
 
 	log.Println("successfully connected to database")
-	return &DBPool{conn}, nil
+	return &DB{db}, nil
 }

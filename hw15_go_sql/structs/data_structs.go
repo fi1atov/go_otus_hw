@@ -6,8 +6,14 @@ import (
 
 // Структура для хранения данных о продукте.
 type Product struct {
-	ID   int
-	Name string
+	ID    int
+	Name  string
+	Price float32
+}
+
+type ProductPatch struct {
+	Name  *string  `json:"name"`
+	Price *float32 `json:"price"`
 }
 
 // Структура для хранения данных о пользователе.
@@ -35,4 +41,10 @@ type UserStat struct {
 
 type ProductService interface {
 	GetProducts() ([]Product, error)
+
+	CreateProduct(*ProductPatch) error
+
+	// UpdateProduct(*Product, ProductPatch) error
+
+	// DeleteProduct(uint) error
 }

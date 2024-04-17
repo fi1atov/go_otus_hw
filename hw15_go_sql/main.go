@@ -1,12 +1,14 @@
 package main
 
 import (
+	_ "database/sql"
 	"fmt"
 	"log"
 	_ "net/http"
 
 	"github.com/fi1atov/go_otus_hw/hw15_go_sql/postgres"
 	"github.com/fi1atov/go_otus_hw/hw15_go_sql/server"
+	_ "github.com/lib/pq"
 	"github.com/spf13/pflag"
 )
 
@@ -29,10 +31,10 @@ func getServerParams() (address string, port int16) {
 func main() {
 	address, port := getServerParams()
 	host := fmt.Sprintf("%s:%d", address, port)
-	dbPool, err := postgres.OpenPool()
+	db, err := postgres.OpenPool()
 	if err != nil {
 		log.Fatalf("cannot open database pool: %v", err)
 	}
-	srv := server.NewServer(dbPool)
+	srv := server.NewServer(db)
 	srv.Run(host)
 }
