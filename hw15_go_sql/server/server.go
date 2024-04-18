@@ -26,7 +26,7 @@ func NewServer(db *postgres.DB) *Server {
 
 	http.HandleFunc("GET /products", s.getProducts)
 	http.HandleFunc("POST /product", s.createProduct)
-	// http.HandleFunc("PUT /product", s.updateProduct)
+	http.HandleFunc("PUT /product/{id}", s.updateProduct)
 	// http.HandleFunc("DELETE /product/{id}", s.deleteProduct)
 	// ...
 

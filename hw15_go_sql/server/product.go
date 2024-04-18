@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/fi1atov/go_otus_hw/hw15_go_sql/structs"
 )
@@ -35,15 +36,28 @@ func (s *Server) createProduct(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusCreated, M{"product": product})
 }
 
-// func (s *Server) updateProduct(w http.ResponseWriter, r *http.Request) {
-// 	// Обновление продукта
-// 	products, err := s.productService.UpdateProduct()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+func (s *Server) updateProduct(w http.ResponseWriter, r *http.Request) {
+	var product structs.Product
+	// Получение json-данных в структуру
+	var productpatch structs.ProductPatch
+	err := json.NewDecoder(r.Body).Decode(&productpatch)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	// Получаем ID продукта из URL и конвертируем в int
+	productID, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Обновление продукта
+	err = s.productService.UpdateProduct(productID, &product, productpatch)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// 	writeJSON(w, http.StatusOK, products)
-// }
+	writeJSON(w, http.StatusAccepted, productpatch)
+}
 
 // func (s *Server) deleteProduct(w http.ResponseWriter, r *http.Request) {
 // 	// Удаление продукта

@@ -44,7 +44,7 @@ type ProductService interface {
 
 	CreateProduct(*ProductPatch) error
 
-	// UpdateProduct(*Product, ProductPatch) error
+	UpdateProduct(int, *Product, ProductPatch) error
 
 	// DeleteProduct(uint) error
 }

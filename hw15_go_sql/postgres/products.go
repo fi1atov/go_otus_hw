@@ -62,3 +62,36 @@ func (ps *ProductService) CreateProduct(product *structs.ProductPatch) error {
 	log.Println("Продукт успешно создан.")
 	return nil
 }
+
+// Обновление продукта.
+func (ps *ProductService) UpdateProduct(productID int, product *structs.Product, patch structs.ProductPatch) error {
+	tx, err := ps.db.BeginTx(context.Background(), &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	if v := patch.Name; v != nil {
+		product.Name = *v
+	}
+
+	if v := patch.Price; v != nil {
+		product.Price = *v
+	}
+
+	_, err = tx.Exec("UPDATE products SET name=$2, price=$3 WHERE id=$1", productID, product.Name, product.Price)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// Продукт обновлен, фиксируем транзакцию
+	err = tx.Commit()
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	log.Println("Продукт успешно обновлен.")
+	return nil
+}
