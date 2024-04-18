@@ -111,7 +111,7 @@ func (ps *ProductService) DeleteProduct(productID int) error {
 		return err
 	}
 
-	// Продукт создан, фиксируем транзакцию
+	// Продукт удален, фиксируем транзакцию
 	err = tx.Commit()
 	if err != nil {
 		log.Println(err)

@@ -12,6 +12,7 @@ import (
 type Server struct {
 	server         *http.Server
 	productService structs.ProductService
+	userService    structs.UserService
 	// ...
 }
 
@@ -28,9 +29,15 @@ func NewServer(db *postgres.DB) *Server {
 	http.HandleFunc("POST /product", s.createProduct)
 	http.HandleFunc("PUT /product/{id}", s.updateProduct)
 	http.HandleFunc("DELETE /product/{id}", s.deleteProduct)
+
+	http.HandleFunc("GET /users", s.getUsers)
+	http.HandleFunc("POST /user", s.createUser)
+	http.HandleFunc("PUT /user/{id}", s.updateUser)
+	http.HandleFunc("DELETE /user/{id}", s.deleteUser)
 	// ...
 
 	s.productService = postgres.NewProductService(db)
+	s.userService = postgres.NewUserService(db)
 	// ...
 
 	return &s
