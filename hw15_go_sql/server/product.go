@@ -59,13 +59,17 @@ func (s *Server) updateProduct(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusAccepted, productpatch)
 }
 
-// func (s *Server) deleteProduct(w http.ResponseWriter, r *http.Request) {
-// 	// Удаление продукта
-// 	product_id := r.PathValue("id")
-// 	products, err := s.productService.DeleteProduct(uint(product_id))
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+func (s *Server) deleteProduct(w http.ResponseWriter, r *http.Request) {
+	// Получаем ID продукта из URL и конвертируем в int
+	productID, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Удаление продукта
+	err = s.productService.DeleteProduct(productID)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// 	writeJSON(w, http.StatusOK, products)
-// }
+	writeJSON(w, http.StatusOK, M{"productID": productID})
+}

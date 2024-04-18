@@ -95,3 +95,28 @@ func (ps *ProductService) UpdateProduct(productID int, product *structs.Product,
 	log.Println("Продукт успешно обновлен.")
 	return nil
 }
+
+// Удаление продукта.
+func (ps *ProductService) DeleteProduct(productID int) error {
+	tx, err := ps.db.BeginTx(context.Background(), &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	_, err = tx.Exec("DELETE FROM products WHERE id=$1", productID)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// Продукт создан, фиксируем транзакцию
+	err = tx.Commit()
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	log.Println("Продукт успешно удален.")
+	return nil
+}
