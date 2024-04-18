@@ -9,7 +9,7 @@ import (
 	"github.com/fi1atov/go_otus_hw/hw15_go_sql/structs"
 )
 
-func (s *Server) getProducts(w http.ResponseWriter, r *http.Request) {
+func (s *Server) getProducts(w http.ResponseWriter, _ *http.Request) {
 	// Вывод всех продуктов
 	products, err := s.productService.GetProducts()
 	if err != nil {
