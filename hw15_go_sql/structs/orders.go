@@ -13,8 +13,8 @@ type Order struct {
 }
 
 type OrderPatch struct {
-	UserID      int
-	TotalAmount float32
+	UserID      *int     `json:"userId"`
+	TotalAmount *float32 `json:"totalAmount"`
 }
 
 type OrderService interface {

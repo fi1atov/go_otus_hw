@@ -13,6 +13,7 @@ type Server struct {
 	server         *http.Server
 	productService structs.ProductService
 	userService    structs.UserService
+	orderService   structs.OrderService
 	// ...
 }
 
@@ -34,10 +35,14 @@ func NewServer(db *postgres.DB) *Server {
 	http.HandleFunc("POST /user", s.createUser)
 	http.HandleFunc("PUT /user/{id}", s.updateUser)
 	http.HandleFunc("DELETE /user/{id}", s.deleteUser)
+
+	http.HandleFunc("POST /order", s.createOrder)
+	http.HandleFunc("DELETE /order/{id}", s.deleteOrder)
 	// ...
 
 	s.productService = postgres.NewProductService(db)
 	s.userService = postgres.NewUserService(db)
+	s.orderService = postgres.NewOrderService(db)
 	// ...
 
 	return &s
