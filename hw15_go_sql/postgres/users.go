@@ -127,3 +127,34 @@ func (ps *UserService) DeleteUser(userID int) error {
 	log.Println("Пользователь успешно удален.")
 	return nil
 }
+
+// Получение списка всех пользователей.
+func (ps *UserService) GetUserStat(userID int) ([]structs.UserStat, error) {
+	rows, err := ps.db.Query(`
+	SELECT u.name, COALESCE(SUM(o.total_amount), 0) AS total_amount, COALESCE(AVG(p.price), 0) as avg_price
+	from orders o
+	join order_products op ON o.id = op.order_id
+	join products p ON op.product_id = p.id
+	join users u ON o.user_id = u.id
+	WHERE u.id = $1
+	group by u.name`,
+		userID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var userStats []structs.UserStat
+	for rows.Next() {
+		var userstat structs.UserStat
+		err = rows.Scan(&userstat.UserName, &userstat.TotalAmount, &userstat.AvgPrice)
+		if err != nil {
+			return nil, err
+		}
+		userStats = append(userStats, userstat)
+	}
+
+	return userStats, nil
+}

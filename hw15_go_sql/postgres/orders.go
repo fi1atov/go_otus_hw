@@ -69,3 +69,31 @@ func (ps *OrderService) DeleteOrder(orderID int) error {
 	log.Println("Заказ успешно удален.")
 	return nil
 }
+
+// Получение всех заказов по пользователю.
+func (ps *OrderService) GetOrdersByUser(userID int) ([]structs.Order, error) {
+	rows, err := ps.db.Query(
+		`SELECT o.id, o.user_id, o.order_date, o.total_amount
+		FROM orders o
+		join users u ON o.user_id = u.id
+		WHERE u.id = $1`,
+		userID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var orders []structs.Order
+	for rows.Next() {
+		var order structs.Order
+		err = rows.Scan(&order.ID, &order.UserID, &order.OrderDate, &order.TotalAmount)
+		if err != nil {
+			return nil, err
+		}
+		orders = append(orders, order)
+	}
+
+	return orders, nil
+}

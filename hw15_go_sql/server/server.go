@@ -35,9 +35,11 @@ func NewServer(db *postgres.DB) *Server {
 	http.HandleFunc("POST /user", s.createUser)
 	http.HandleFunc("PUT /user/{id}", s.updateUser)
 	http.HandleFunc("DELETE /user/{id}", s.deleteUser)
+	http.HandleFunc("GET /user_stat/{id}", s.getUserStat)
 
 	http.HandleFunc("POST /order", s.createOrder)
 	http.HandleFunc("DELETE /order/{id}", s.deleteOrder)
+	http.HandleFunc("GET /order/{id}", s.getOrdersByUser)
 	// ...
 
 	s.productService = postgres.NewProductService(db)

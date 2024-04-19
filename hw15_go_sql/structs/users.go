@@ -29,4 +29,6 @@ type UserService interface {
 	UpdateUser(int, *User, UserPatch) error
 
 	DeleteUser(int) error
+
+	GetUserStat(int) ([]UserStat, error)
 }

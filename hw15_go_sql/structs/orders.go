@@ -21,4 +21,6 @@ type OrderService interface {
 	CreateOrder(*OrderPatch) error
 
 	DeleteOrder(int) error
+
+	GetOrdersByUser(int) ([]Order, error)
 }

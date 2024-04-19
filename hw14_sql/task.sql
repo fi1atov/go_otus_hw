@@ -104,7 +104,7 @@ join users u ON o.user_id = u.id
 WHERE u.name = 'Петя';
 
 -- запрос на выборку статистики по пользователю (общая сумма заказов/средняя цена товара)
-SELECT u.name, SUM(o.total_amount) AS total_amount, AVG(p.price) as avg_price
+SELECT u.name, COALESCE(SUM(o.total_amount), 0) AS total_amount, COALESCE(AVG(p.price), 0) as avg_price
 from orders o
 join order_products op ON o.id = op.order_id
 join products p ON op.product_id = p.id

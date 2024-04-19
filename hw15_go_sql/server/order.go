@@ -40,3 +40,18 @@ func (s *Server) deleteOrder(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusOK, M{"orderID": orderID})
 }
+
+func (s *Server) getOrdersByUser(w http.ResponseWriter, r *http.Request) {
+	// Получаем ID пользователя из URL и конвертируем в int
+	userID, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	// выборка заказов по пользователю
+	products, err := s.orderService.GetOrdersByUser(userID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	writeJSON(w, http.StatusOK, products)
+}

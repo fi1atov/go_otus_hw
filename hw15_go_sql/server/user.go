@@ -73,3 +73,18 @@ func (s *Server) deleteUser(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusOK, M{"userID": userID})
 }
+
+func (s *Server) getUserStat(w http.ResponseWriter, r *http.Request) {
+	// Получаем ID пользователя из URL и конвертируем в int
+	userID, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Вывод всех продуктов
+	users, err := s.userService.GetUserStat(userID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	writeJSON(w, http.StatusOK, users)
+}
