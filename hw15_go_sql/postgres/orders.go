@@ -45,6 +45,72 @@ func (ps *OrderService) CreateOrder(order *structs.OrderPatch) error {
 	return nil
 }
 
+// Создание заказа с продуктами.
+func (ps *OrderService) CreateOrderV2(order *structs.CreateOrderRequest) error {
+	var lastInsertID int
+	var totalAmount int
+	var productPrice int
+
+	tx, err := ps.db.BeginTx(context.Background(), &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	// найти общую стоимость продуктов для получения totalAmount - он понадобится при создании заказа
+	for _, product := range *order.Products {
+		rows, erro := ps.db.Query(
+			`SELECT p.price
+			FROM products p
+			WHERE p.id = $1`,
+			product.ID,
+		)
+		if erro != nil {
+			return erro
+		}
+		for rows.Next() {
+			err = rows.Scan(&productPrice)
+			if err != nil {
+				return err
+			}
+			totalAmount += productPrice
+		}
+	}
+
+	// этот инсерт должен сработать таким образом, чтобы вытащился ИД вставленного заказа
+	// он потребуется для вставки в order_products
+	err = tx.QueryRow(
+		"INSERT INTO orders (user_id, order_date, total_amount) VALUES ($1, $2, $3) RETURNING id",
+		order.UserID, time.Now(), totalAmount,
+	).Scan(&lastInsertID)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// создаем записи в order_products
+	for _, product := range *order.Products {
+		_, err = tx.Exec(
+			"INSERT INTO order_products (order_id, product_id) VALUES ($1, $2)",
+			lastInsertID, product.ID,
+		)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+	}
+
+	// Заказ создан, продукты по заказу созданы - фиксируем транзакцию
+	err = tx.Commit()
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	log.Println("Заказ успешно создан.")
+	return nil
+}
+
 // Удаление заказа.
 func (ps *OrderService) DeleteOrder(orderID int) error {
 	tx, err := ps.db.BeginTx(context.Background(), &sql.TxOptions{Isolation: sql.LevelSerializable})

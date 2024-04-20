@@ -38,6 +38,7 @@ func NewServer(db *postgres.DB) *Server {
 	http.HandleFunc("GET /user_stat/{id}", s.getUserStat)
 
 	http.HandleFunc("POST /order", s.createOrder)
+	http.HandleFunc("POST /order_v2", s.CreateOrderV2)
 	http.HandleFunc("DELETE /order/{id}", s.deleteOrder)
 	http.HandleFunc("GET /order/{id}", s.getOrdersByUser)
 	// ...

@@ -12,6 +12,17 @@ type Order struct {
 	TotalAmount float32
 }
 
+// Структура продукта вложенная в заказ.
+type ProductRequest struct {
+	ID *int `json:"id"`
+}
+
+// Структура заказа с вложенными в заказ продуктами.
+type CreateOrderRequest struct {
+	UserID   *int              `json:"userId"`
+	Products *[]ProductRequest `json:"products"`
+}
+
 type OrderPatch struct {
 	UserID      *int     `json:"userId"`
 	TotalAmount *float32 `json:"totalAmount"`
@@ -19,6 +30,8 @@ type OrderPatch struct {
 
 type OrderService interface {
 	CreateOrder(*OrderPatch) error
+
+	CreateOrderV2(*CreateOrderRequest) error
 
 	DeleteOrder(int) error
 

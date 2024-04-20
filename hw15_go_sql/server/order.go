@@ -26,6 +26,23 @@ func (s *Server) createOrder(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusCreated, M{"order": order})
 }
 
+func (s *Server) CreateOrderV2(w http.ResponseWriter, r *http.Request) {
+	// Получение json-данных в структуру
+	var order structs.CreateOrderRequest
+	err := json.NewDecoder(r.Body).Decode(&order)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	// Создание продукта
+	if err = s.orderService.CreateOrderV2(&order); err != nil {
+		serverError(w, err)
+		return
+	}
+
+	writeJSON(w, http.StatusCreated, M{"order": order})
+}
+
 func (s *Server) deleteOrder(w http.ResponseWriter, r *http.Request) {
 	// Получаем ID продукта из URL и конвертируем в int
 	orderID, err := strconv.Atoi(r.PathValue("id"))
