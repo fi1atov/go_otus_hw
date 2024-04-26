@@ -16,7 +16,7 @@ CREATE TABLE orders (
   user_id INT NOT NULL,
   order_date DATE NOT NULL,
   total_amount FLOAT NOT NULL,
-  CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id)
+  CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) on delete cascade
 );
 
 CREATE TABLE products (
@@ -29,16 +29,18 @@ CREATE TABLE order_products (
   id SERIAL PRIMARY KEY,
   order_id INT NOT NULL,
   product_id INT NOT NULL,
-  CONSTRAINT fk_order FOREIGN KEY(order_id) REFERENCES orders(id),
-  CONSTRAINT fk_product FOREIGN KEY(product_id) REFERENCES products(id)
+  CONSTRAINT fk_order FOREIGN KEY(order_id) REFERENCES orders(id) on delete cascade,
+  CONSTRAINT fk_product FOREIGN KEY(product_id) REFERENCES products(id) on delete cascade
 );
 
 -- Индексы на первичные ключи создались автоматически. Добавляю еще индексы на дополнительные поля
-
+-- Также создаю индексы на поля с внешними ключами т.к. автоматом там индексы не появятся
 CREATE INDEX ix_user_name ON users (name);
 CREATE INDEX ix_user_email ON users (email);
 
 CREATE INDEX ix_product_name ON products (name);
+
+CREATE INDEX ix_order_user_id ON orders (user_id);
 
 CREATE INDEX ix_order_product_order_id ON order_products (order_id);
 CREATE INDEX ix_order_product_product_id ON order_products (product_id);
@@ -102,7 +104,7 @@ join users u ON o.user_id = u.id
 WHERE u.name = 'Петя';
 
 -- запрос на выборку статистики по пользователю (общая сумма заказов/средняя цена товара)
-SELECT u.name, SUM(o.total_amount) AS total_amount, AVG(p.price) as avg_price
+SELECT u.name, COALESCE(SUM(o.total_amount), 0) AS total_amount, COALESCE(AVG(p.price), 0) as avg_price
 from orders o
 join order_products op ON o.id = op.order_id
 join products p ON op.product_id = p.id
